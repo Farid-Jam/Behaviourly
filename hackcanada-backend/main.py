@@ -6,6 +6,7 @@ import os
 import json
 from typing import Optional
 from datetime import datetime
+from interview_context import router as interview_context_router
 
 app = FastAPI()
 
@@ -17,8 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(interview_context_router)
+
 # Configure Gemini
 client = genai.Client(api_key="AIzaSyB1qnZ_QufzHk8QUuOP-R-oVbZo3fw3kuo")
+app.state.gemini_model = client
 
 
 #how are we gonna score them
