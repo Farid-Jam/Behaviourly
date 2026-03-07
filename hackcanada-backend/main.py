@@ -33,3 +33,6 @@ SCORING_RULES = {
     "weak_answer": -3,  # Gemini rates answer poorly
 }
 
+@app.post("/mock_interview")
+async def 
+
