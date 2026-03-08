@@ -381,7 +381,7 @@ export default function Interview() {
             <h1 className="interview-summary-title">Interview Summary</h1>
             <p className="interview-summary-text">Your interview is complete. Review your performance and key takeaways below.</p>
             <div className="interview-summary-vitals">
-              <h2 className="interview-summary-vitals-title">Vitals & stress by question</h2>
+              <h2 className="interview-summary-vitals-title">Feedback & analysis by question</h2>
               {presageLoading && vitalsByQuestion.length === 0 && (
                 <p className="interview-summary-vitals-wait">Analyzing your last answer… (this can take 30–90 seconds)</p>
               )}
