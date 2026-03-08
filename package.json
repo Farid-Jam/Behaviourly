@@ -1,0 +1,14 @@
+{
+  "name": "hackcanadaapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently --names \"BACKEND,FRONTEND\" -c \"blue,magenta\" \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd hackcanada-backend && uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "frontend": "npm run dev --prefix Behaviourly-frontend/Behviourly-frontend",
+    "prestart": "npm install && npm install --prefix Behaviourly-frontend/Behviourly-frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

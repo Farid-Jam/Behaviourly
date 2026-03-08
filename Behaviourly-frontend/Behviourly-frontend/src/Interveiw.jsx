@@ -23,6 +23,8 @@ export default function Interview() {
   const [apiError, setApiError] = useState(null)
   const [started, setStarted] = useState(false)
   const [ended, setEnded] = useState(false)
+  const [answerSubmitted, setAnswerSubmitted] = useState(false)
+  const [lastRecordingUrl, setLastRecordingUrl] = useState(null)
   const cameraRef = useRef(null)
 
   // Fetch questions for this company and role
@@ -60,20 +62,36 @@ export default function Interview() {
     }
   }, [started, ended, currentQ, questions])
 
-  // Auto-start recording when advancing to next question (external controls mode)
-  useEffect(() => {
-    if (started && !ended && currentQ < questions.length) {
+  function tryStartRecording() {
+    if (started && !ended && currentQ < questions.length && !answerSubmitted) {
       cameraRef.current?.startRecording?.()
     }
-  }, [started, ended, currentQ, questions.length])
+  }
 
-  function handleNextQuestion() {
-    if (currentQ >= questions.length) return
-    setCurrentQ(prev => prev + 1)
+  // Auto-start recording when on a question (useEffect for state changes)
+  useEffect(() => {
+    tryStartRecording()
+  }, [started, ended, currentQ, questions.length, answerSubmitted])
+
+  // Start recording when Camera becomes ready (handles remount after Next Question)
+  function handleCameraReady() {
+    tryStartRecording()
   }
 
   function handleRecordingComplete(blob, url) {
-    // Recording stopped — advancement is handled by Next Question button
+    setLastRecordingUrl(url)
+  }
+
+  function handleComplete() {
+    cameraRef.current?.stopRecording?.()
+    setAnswerSubmitted(true)
+  }
+
+  function handleNextQuestion() {
+    if (currentQ >= questions.length) return
+    setAnswerSubmitted(false)
+    setLastRecordingUrl(null)
+    setCurrentQ(prev => prev + 1)
   }
 
   const complete = ended || currentQ >= questions.length
@@ -102,8 +120,8 @@ export default function Interview() {
 
       {apiError && <div className="interview-api-error">{apiError}</div>}
 
-      {/* Questions — only visible after Start interview */}
-      {started && !complete && (
+      {/* Questions — only visible after Start interview, hidden when answer submitted */}
+      {started && !complete && !answerSubmitted && (
         <div className="interview-questions-card">
           <span className="interview-questions-label">Question {currentQ + 1} of {questions.length}</span>
           <p className="interview-current-question">
@@ -112,9 +130,16 @@ export default function Interview() {
         </div>
       )}
 
-      {/* Camera — always shown, controls below via externalControls */}
+      {/* Camera — hidden when answer submitted or on Interview Summary; unmount kills camera (green light off) */}
       <div className="interview-section">
-        <Camera ref={cameraRef} onRecordingComplete={handleRecordingComplete} externalControls />
+        {!answerSubmitted && !complete && (
+          <Camera
+            ref={cameraRef}
+            onRecordingComplete={handleRecordingComplete}
+            onCameraReady={handleCameraReady}
+            externalControls
+          />
+        )}
         {!started ? (
           <button
             type="button"
@@ -123,17 +148,38 @@ export default function Interview() {
           >
             Start interview
           </button>
-        ) : !complete ? (
-          <div className="interview-actions">
+        ) : complete ? (
+          /* Interview Summary — shown when all questions done */
+          <div className="interview-summary">
+            <h1 className="interview-summary-title">Interview Summary</h1>
+            <p className="interview-summary-text">Your interview is complete. Review your performance and key takeaways below.</p>
+          </div>
+        ) : answerSubmitted ? (
+          /* After Complete: Below your recording + Next Question (no camera, no next question preview) */
+          <div className="interview-post-answer">
+            <div className="interview-recording-section">
+              <h3 className="interview-recording-label">Below your recording</h3>
+              {lastRecordingUrl && (
+                <video src={lastRecordingUrl} controls className="interview-recording-playback" />
+              )}
+            </div>
             <button
               type="button"
-              onClick={() => {
-                cameraRef.current?.stopRecording?.()
-                handleNextQuestion()
-              }}
+              onClick={handleNextQuestion}
               className="interview-next-btn"
             >
               Next Question →
+            </button>
+          </div>
+        ) : (
+          /* During recording: Complete + End interview */
+          <div className="interview-actions">
+            <button
+              type="button"
+              onClick={handleComplete}
+              className="interview-complete-btn"
+            >
+              Complete
             </button>
             <button
               type="button"
@@ -146,8 +192,6 @@ export default function Interview() {
               End interview
             </button>
           </div>
-        ) : (
-          <div className="interview-done">Interview complete!</div>
         )}
       </div>
     </div>

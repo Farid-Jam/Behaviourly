@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import "./Camera.css";
 
-const Camera = forwardRef(function Camera({ onRecordingComplete, externalControls = false }, ref) {
+const Camera = forwardRef(function Camera({ onRecordingComplete, onCameraReady, externalControls = false }, ref) {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -37,6 +37,7 @@ const Camera = forwardRef(function Camera({ onRecordingComplete, externalControl
         video.play().catch(() => {});
       }
       setCameraReady(true);
+      onCameraReady?.();
     } catch (err) {
       setError("Camera access denied. Please allow camera permissions.");
       console.error("Camera error:", err);
