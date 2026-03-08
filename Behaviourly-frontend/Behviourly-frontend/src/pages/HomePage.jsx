@@ -20,27 +20,93 @@ export default function HomePage() {
   const { user, loading: userLoading } = useUser();
   const [interviews, setInterviews] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
+  
+  // Modal state
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [roleName, setRoleName] = useState("");
+  const [description, setDescription] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Use the name from your Auth0 profile
   const name = user?.name?.split(" ")[0] || "there";
 
-  useEffect(() => {
-    // Only fetch if we have a user session
-    if (!userLoading && user) {
-      fetch("http://localhost:8000/interviews", { 
-        credentials: "include" // Required for Flask session cookies
+  function fetchInterviews() {
+    if (!user) {
+      setInterviews([]);
+      setDataLoading(false);
+      return;
+    }
+
+    setDataLoading(true);
+    fetch("http://localhost:8000/interviews", {
+      credentials: "include", // Required for Flask session cookies
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setInterviews(data);
+        else setInterviews([]);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (Array.isArray(data)) setInterviews(data);
-          setDataLoading(false);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch interviews:", err);
-          setDataLoading(false);
-        });
+      .catch((err) => {
+        console.error("Failed to fetch interviews:", err);
+      })
+      .finally(() => setDataLoading(false));
+  }
+
+  useEffect(() => {
+    if (!userLoading) {
+      fetchInterviews();
     }
   }, [user, userLoading]);
+
+  function closeCreateModal() {
+    setShowCreateModal(false);
+    setSubmitError("");
+    setCompanyName("");
+    setRoleName("");
+    setDescription("");
+  }
+
+  async function handleCreateInterview(e) {
+    e.preventDefault();
+    setSubmitError("");
+
+    const payload = {
+      company: companyName.trim(),
+      role: roleName.trim(),
+      description: description.trim(),
+    };
+
+    if (!payload.company || !payload.role || !payload.description) {
+      setSubmitError("Please fill in all fields.");
+      return;
+    }
+
+    setSubmitLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/interviews", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to create interview.");
+      }
+
+      setInterviews((prev) => [data, ...prev]);
+      closeCreateModal();
+    } catch (err) {
+      setSubmitError(err.message || "Failed to create interview.");
+    } finally {
+      setSubmitLoading(false);
+    }
+  }
 
   if (userLoading || dataLoading) {
     return (
@@ -71,7 +137,17 @@ export default function HomePage() {
       </header>
 
       <section className="home-section">
-        <h2 className="home-section-title">Detected Interviews</h2>
+        <div className="home-section-head">
+          <h2 className="home-section-title">Detected Interviews</h2>
+          <button
+            type="button"
+            className="home-add-btn"
+            onClick={() => setShowCreateModal(true)}
+            aria-label="Add interview"
+          >
+            +
+          </button>
+        </div>
         {interviews.length === 0 ? (
           <div className="empty-state-wrap">
             <p className="empty-state">No interviews found yet. We're scanning your inbox!</p>
@@ -79,7 +155,7 @@ export default function HomePage() {
             <button
               type="button"
               className="home-card-practice empty-state-cta"
-              onClick={() => navigate("/interview-context")}
+              onClick={() => setShowCreateModal(true)}
             >
               Start a practice interview
             </button>
@@ -127,6 +203,57 @@ export default function HomePage() {
           </ul>
         )}
       </section>
+
+      {/* --- Create Interview Modal --- */}
+      {showCreateModal && (
+        <div className="home-modal-overlay" role="dialog" aria-modal="true" aria-label="Create interview">
+          <div className="home-modal-card">
+            <h3 className="home-modal-title">Add interview</h3>
+            <form onSubmit={handleCreateInterview} className="home-modal-form">
+              <label>
+                Company Name
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  placeholder="e.g. Shopify"
+                />
+              </label>
+
+              <label>
+                Position / Role
+                <input
+                  type="text"
+                  value={roleName}
+                  onChange={(e) => setRoleName(e.target.value)}
+                  placeholder="e.g. Software Engineer Intern"
+                />
+              </label>
+
+              <label>
+                Description of interview type
+                <textarea
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. Behavioral first-round focused on teamwork and communication"
+                />
+              </label>
+
+              {submitError && <p className="home-modal-error">{submitError}</p>}
+
+              <div className="home-modal-actions">
+                <button type="button" className="home-modal-btn home-modal-btn--secondary" onClick={closeCreateModal}>
+                  Cancel
+                </button>
+                <button type="submit" className="home-modal-btn home-modal-btn--primary" disabled={submitLoading}>
+                  {submitLoading ? "Creating..." : "Create interview"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
