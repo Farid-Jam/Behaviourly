@@ -67,11 +67,13 @@ GMAIL_BASE = "https://gmail.googleapis.com/gmail/v1/users/me"
 # Broad query to catch potential interview emails.
 # Gemini will do the real filtering.
 INTERVIEW_QUERY = (
-    "interview OR scheduling OR recruiter OR offer OR assessment "
-    "OR coding challenge OR phone screen OR onsite OR hiring OR application "
-    "newer_than:10d"
+    "in:inbox -is:sent "  # Only look at the Inbox and ignore anything I sent
+    "(interview OR scheduling OR recruiter OR offer OR assessment "
+    "OR \"coding challenge\" OR \"phone screen\" OR onsite OR hiring OR application "
+    "OR availability OR \"touch base\" OR \"connect\" OR \"chat\" OR \"speak\" "
+    "OR calendly OR \"google meet\" OR zoom OR \"teams link\") "
+    "newer_than:6h"
 )
-
 
 def fetch_candidate_emails(access_token: str) -> list[dict]:
     """Search Gmail for emails that might be interview invites."""
@@ -80,7 +82,7 @@ def fetch_candidate_emails(access_token: str) -> list[dict]:
     response = requests.get(
         f"{GMAIL_BASE}/messages",
         headers=headers,
-        params={"q": INTERVIEW_QUERY, "maxResults": 20},
+        params={"q": INTERVIEW_QUERY, "maxResults": 5},
     )
 
     if not response.ok:
@@ -162,22 +164,29 @@ def extract_body(payload: dict) -> str:
     return plain or html or ""
 
 def analyze_email(email: dict) -> dict | None:
-    """
-    Send an email to Gemini to determine if it's an interview invite.
-    Returns structured data if it is, None if it's not.
-    """
-    prompt = f"""Analyze this email and determine if it is an interview invitation or scheduling email.
+    # ... metadata setup ...
+    prompt = f"""Analyze this email and determine if it is an interview invitation, 
+    a scheduling request, or a recruiter reaching out to discuss a specific job role.
 
-EMAIL METADATA:
-From: {email.get('from', 'unknown')}
-Subject: {email.get('subject', 'unknown')}
-Date: {email.get('date', 'unknown')}
+    Include:
+    - Formal interview invites (technical, behavioral, onsite).
+    - Requests for "availability" or to "hop on a quick call/chat."
+    - Coding challenges or assessments.
+    - Casual recruiter reach-outs asking to "touch base" or "connect."
 
-EMAIL BODY:
-{email.get('body', '')[:4000]}
+    Exclude:
+    - Generic newsletters, job board alerts, automated rejections, or marketing.
 
-Respond ONLY with a JSON object, no markdown, no backticks, no extra text.
+    EMAIL METADATA:
+    From: {email.get('from', 'unknown')}
+    Subject: {email.get('subject', 'unknown')}
+    Date: {email.get('date', 'unknown')}
 
+    EMAIL BODY:
+    {email.get('body', '')[:4000]}
+
+    Respond ONLY with a JSON object...
+    
 If this IS an interview invitation or scheduling email:
 {{
     "is_interview": true,
@@ -220,7 +229,7 @@ def generate_questions(company: str, role: str, interview_type: str) -> list[dic
     Ask Gemini to generate likely behavioral interview questions
     for a specific company and role.
     """
-    prompt = f"""Generate 8-10 behavioral interview questions that a candidate would likely be asked
+    prompt = f"""Generate 4-6 behavioral interview questions that a candidate would likely be asked
 for a {role} position at {company}. The interview type is: {interview_type}.
 
 Focus on:
