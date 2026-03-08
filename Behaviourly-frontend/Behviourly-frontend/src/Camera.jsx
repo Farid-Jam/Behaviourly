@@ -5,6 +5,7 @@ const Camera = forwardRef(function Camera({ onRecordingComplete, onCameraReady, 
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+  const stopResolveRef = useRef(null);
 
   const [cameraReady, setCameraReady] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -28,7 +29,7 @@ const Camera = forwardRef(function Camera({ onRecordingComplete, onCameraReady, 
   async function startCamera() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: { width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 8, max: 10 } },
         audio: true,
       });
       const video = videoRef.current;
@@ -59,15 +60,24 @@ const Camera = forwardRef(function Camera({ onRecordingComplete, onCameraReady, 
 
     const mediaRecorder = new MediaRecorder(stream, {
       mimeType: "video/webm",
-      videoBitsPerSecond: 2500000,
+      videoBitsPerSecond: 350000,
+      audioBitsPerSecond: 64000,
     });
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) chunksRef.current.push(e.data);
     };
     mediaRecorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      if (onRecordingComplete) onRecordingComplete(blob, url);
+      const flushAndDeliver = () => {
+        const blob = new Blob(chunksRef.current, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        if (onRecordingComplete) onRecordingComplete(blob, url);
+        if (stopResolveRef.current) {
+          stopResolveRef.current({ blob, url });
+          stopResolveRef.current = null;
+        }
+        setRecording(false);
+      };
+      setTimeout(flushAndDeliver, 150);
     };
 
     mediaRecorderRef.current = mediaRecorder;
@@ -78,9 +88,13 @@ const Camera = forwardRef(function Camera({ onRecordingComplete, onCameraReady, 
   function stopRecording() {
     const mr = mediaRecorderRef.current;
     if (mr?.state === "recording") {
+      const promise = new Promise((resolve) => {
+        stopResolveRef.current = resolve;
+      });
       mr.stop();
-      setRecording(false);
+      return promise;
     }
+    return Promise.resolve({ blob: null, url: null });
   }
 
   useImperativeHandle(ref, () => ({
