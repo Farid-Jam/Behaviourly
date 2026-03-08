@@ -1,0 +1,22 @@
+{
+  "name": "hackcanadaapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allenabraham106/HackCanadaApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/allenabraham106/HackCanadaApp/issues"
+  },
+  "homepage": "https://github.com/allenabraham106/HackCanadaApp#readme",
+  "dependencies": {}
+}

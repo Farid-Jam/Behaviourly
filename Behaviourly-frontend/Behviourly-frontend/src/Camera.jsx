@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import "./Camera.css";
 
-export default function Camera({ onRecordingComplete }) {
+const Camera = forwardRef(function Camera({ onRecordingComplete, externalControls = false }, ref) {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -92,6 +92,13 @@ export default function Camera({ onRecordingComplete }) {
     }
   }
 
+  useImperativeHandle(ref, () => ({
+    startRecording,
+    stopRecording,
+    isRecording: () => mediaRecorderRef.current?.state === "recording",
+    isReady: cameraReady,
+  }), [cameraReady]);
+
   if (error) {
     return (
       <div className="camera-block__error">
@@ -116,26 +123,30 @@ export default function Camera({ onRecordingComplete }) {
         </div>
       )}
 
-      <div className="camera-block__controls">
-        {!recording ? (
-          <button
-            type="button"
-            className="camera-block__btn camera-block__btn--start"
-            onClick={startRecording}
-            disabled={!cameraReady}
-          >
-            {cameraReady ? "Start interview" : "Loading camera…"}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="camera-block__btn camera-block__btn--stop"
-            onClick={stopRecording}
-          >
-            Stop interview
-          </button>
-        )}
-      </div>
+      {!externalControls && (
+        <div className="camera-block__controls">
+          {!recording ? (
+            <button
+              type="button"
+              className="camera-block__btn camera-block__btn--start"
+              onClick={startRecording}
+              disabled={!cameraReady}
+            >
+              {cameraReady ? "Start interview" : "Loading camera…"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="camera-block__btn camera-block__btn--stop"
+              onClick={stopRecording}
+            >
+              Stop interview
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
-}
+});
+
+export default Camera;

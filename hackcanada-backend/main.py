@@ -68,11 +68,13 @@ def _get_tip(triggered: list) -> Optional[str]:
 @app.post("/mock-interview")
 async def mock_interview(body: dict):
     role = body.get("role", "software engineer")
-    num_questions = body.get("num_questions", 5)
+    company = body.get("company") or ""
+    num_questions = body.get("num_questions", 3)
 
+    company_phrase = f" at {company}" if company else ""
     prompt = f"""
-    Generate {num_questions} realistic interview questions for a {role} position.
-    Mix behavioral, technical, and situational questions.
+    Generate exactly {num_questions} short, realistic interview questions for a {role} position{company_phrase}.
+    Keep each question brief (under 15 words). Use questions commonly asked in real job interviews.
     Return ONLY a JSON array of strings, no extra text, no markdown.
     Example: ["Tell me about yourself.", "Describe a challenge you overcame."]
     """

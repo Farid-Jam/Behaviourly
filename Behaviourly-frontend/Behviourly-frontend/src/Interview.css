@@ -1,0 +1,177 @@
+/* Interview page — matches app theme (teal accent, Outfit font, card layout) */
+.interview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem 0 4rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.interview-header {
+  background: linear-gradient(135deg, #e2e8f0 0%, #ecfeff 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.interview-label {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+
+.interview-context {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.interview-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.interview-end-btn {
+  border: 1px solid var(--border);
+  color: #475569;
+  background: #fff;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.interview-end-btn:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.interview-start-btn {
+  border: none;
+  color: #fff;
+  padding: 1rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.interview-start-btn:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+/* Questions block — one at a time */
+.interview-questions-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+
+.interview-questions-label {
+  display: block;
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+}
+
+.interview-current-question {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.5;
+  padding: 1rem 1.25rem;
+  background: var(--accent-muted, #ccfbf1);
+  border-radius: 10px;
+  border-left: 4px solid var(--accent);
+}
+
+.interview-loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.2rem;
+  color: #475569;
+}
+
+.interview-error-box {
+  padding: 1.5rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.interview-error-box strong {
+  color: #0f172a;
+}
+
+.interview-error-text {
+  color: #b91c1c;
+  margin: 0.5rem 0;
+}
+
+.interview-error-hint {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.75rem;
+}
+
+.interview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.interview-next-hint {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.interview-next-btn {
+  border: none;
+  color: #fff;
+  width: min(100%, 260px);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.interview-next-btn:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+.interview-done {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  padding: 2rem;
+}

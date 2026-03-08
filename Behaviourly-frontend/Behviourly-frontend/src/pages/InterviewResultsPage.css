@@ -1,0 +1,84 @@
+.interview-results-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.interview-results-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.interview-results-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.interview-results-subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #64748b;
+}
+
+.interview-results-charts {
+  margin-bottom: 2rem;
+}
+
+.interview-results-chart-wrap {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.interview-results-chart-title {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.interview-results-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.interview-results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.interview-results-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #475569;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+.interview-results-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.interview-results-btn--primary {
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  border: none;
+  color: #fff;
+}
+
+.interview-results-btn--primary:hover {
+  opacity: 0.95;
+}

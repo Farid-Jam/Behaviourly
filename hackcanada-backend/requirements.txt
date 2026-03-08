@@ -1,0 +1,9 @@
+flask>=3.0
+requests>=2.28
+python-dotenv>=1.0
+sqlalchemy>=2.0
+fastapi>=0.100
+uvicorn>=0.22
+google-genai>=1.0
+# presage_technologies>=1.6.0  # blocked: requires mediapipe==0.9.1.0 (removed from PyPI)
+python-multipart>=0.0.6
