@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom"
 import Camera from "./Camera"
 import { speakText } from "./elevenLabs"
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
+
 export default function Interview() {
   const { state } = useLocation()
   const company = state?.company
@@ -17,9 +19,9 @@ export default function Interview() {
   // Reset backend session + fetch questions from backend on load (uses role from InterviewContextPage)
   useEffect(() => {
     // Clear any previous scoring state on the backend (best-effort).
-    fetch("http://127.0.0.1:8000/reset-session", { method: "POST" }).catch(() => {})
+    fetch(`${API_BASE_URL}/reset-session`, { method: "POST" }).catch(() => {})
 
-    fetch("http://127.0.0.1:8000/mock-interview", {
+    fetch(`${API_BASE_URL}/mock-interview`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, company: company || undefined, num_questions: 3 })

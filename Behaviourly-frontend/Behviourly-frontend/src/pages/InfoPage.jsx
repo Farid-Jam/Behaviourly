@@ -3,10 +3,6 @@ import "./InfoPage.css";
 
 const SEEN_INFO_KEY = "behaviourly_seen_info";
 
-function handleLogin() {
-  window.location.href = "http://localhost:8000/login";
-}
-
 const FEATURE_CARDS = [
   {
     title: "Interview notifications",
@@ -154,7 +150,7 @@ export default function InfoPage() {
             <p className="info-hero-desc">
               Boost your confidence with realistic AI-powered mock interviews and land your dream job.
             </p>
-            <button type="button" className="info-hero-cta" onClick={handleLogin}>
+            <button type="button" className="info-hero-cta" onClick={goToDashboard}>
               <IconRocket />
               Try it for free
             </button>
