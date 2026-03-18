@@ -1,6 +1,10 @@
 
-[![Behaviourly Logo](Behaviourly.png)](https://devpost.com/software/behaviourly)
-*Click on the image to see Devpost*
+<div align="center">
+  <a href="https://devpost.com/software/behaviourly">
+    <img src="Behaviourly.png" alt="Behaviourly Logo" width="400">
+  </a>
+  <p><i>Click the logo to view the project on Devpost</i></p>
+</div>
 
 Behaviourly is an AI-powered interview preparation platform with a React frontend and Python backends.
 It combines interview discovery, personalized prep context, mock interviews, and multimodal feedback (speech, stress/body-language cues, and answer quality).
