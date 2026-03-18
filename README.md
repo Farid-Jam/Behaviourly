@@ -1,10 +1,13 @@
-# Behaviourly
-
 <div align="center">
   <a href="https://devpost.com/software/behaviourly">
     <img src="Behaviourly.png" alt="Behaviourly Logo" width="400">
   </a>
   <p><i>Click the logo to view the project on Devpost</i></p>
+
+  [![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+  [![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+  [![Gemini AI](https://img.shields.io/badge/Google_Gemini-8E75B2?style=flat-square&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 </div>
 
 Behaviourly is an AI-powered interview preparation platform with a React frontend and Python backends.
