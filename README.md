@@ -1,5 +1,6 @@
 
 [![Behaviourly Logo](Behaviourly.png)](https://devpost.com/software/behaviourly)
+*Click on the image to see Devpost*
 Behaviourly is an AI-powered interview preparation platform with a React frontend and Python backends.
 It combines interview discovery, personalized prep context, mock interviews, and multimodal feedback (speech, stress/body-language cues, and answer quality).
 
