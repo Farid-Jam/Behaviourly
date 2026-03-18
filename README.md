@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://devpost.com/software/behaviourly">
-    <img src="Behaviourly.png" alt="Behaviourly Logo" width="400">
+    <img src="Behaviourly.png" alt="Behaviourly Logo" width="800">
   </a>
   <p><i>Click the logo to view the project on Devpost</i></p>
 
